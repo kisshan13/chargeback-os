@@ -1,0 +1,5 @@
+{"id":"POL-000001","merchantId":"MER-000001","name":"REFUND policy","type":"REFUND","createdAt":"2026-08-08T09:00:00.000Z"}
+{"id":"POL-000002","merchantId":"MER-000001","name":"RETURN policy","type":"RETURN","createdAt":"2026-08-08T09:00:00.000Z"}
+{"id":"POL-000003","merchantId":"MER-000001","name":"SHIPPING policy","type":"SHIPPING","createdAt":"2026-08-08T09:00:00.000Z"}
+{"id":"POL-000004","merchantId":"MER-000001","name":"CANCELLATION policy","type":"CANCELLATION","createdAt":"2026-08-08T09:00:00.000Z"}
+{"id":"POL-000005","merchantId":"MER-000001","name":"TERMS_OF_SERVICE policy","type":"TERMS_OF_SERVICE","createdAt":"2026-08-08T09:00:00.000Z"}

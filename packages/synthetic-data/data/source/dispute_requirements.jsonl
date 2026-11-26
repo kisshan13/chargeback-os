@@ -1,0 +1,17 @@
+{"id":"DRQ-000001","requirementSetId":"DRS-000001","evidenceCategory":"PAYMENT","description":"Original payment record","required":true}
+{"id":"DRQ-000002","requirementSetId":"DRS-000001","evidenceCategory":"ORDER","description":"Original order and order items","required":true}
+{"id":"DRQ-000003","requirementSetId":"DRS-000001","evidenceCategory":"DELIVERY_CONFIRMATION","description":"Delivery confirmation","required":true}
+{"id":"DRQ-000004","requirementSetId":"DRS-000001","evidenceCategory":"CUSTOMER_COMMUNICATION","description":"Customer communications","required":false}
+{"id":"DRQ-000005","requirementSetId":"DRS-000002","evidenceCategory":"PAYMENT","description":"Original payment record","required":true}
+{"id":"DRQ-000006","requirementSetId":"DRS-000002","evidenceCategory":"PRODUCT_DESCRIPTION","description":"Purchase-time product description","required":true}
+{"id":"DRQ-000007","requirementSetId":"DRS-000002","evidenceCategory":"CUSTOMER_COMMUNICATION","description":"Customer complaint","required":true}
+{"id":"DRQ-000008","requirementSetId":"DRS-000002","evidenceCategory":"RETURN_RECORDS","description":"Return records","required":false}
+{"id":"DRQ-000009","requirementSetId":"DRS-000003","evidenceCategory":"CAPTURE_TRANSACTIONS","description":"Successful capture transactions","required":true}
+{"id":"DRQ-000010","requirementSetId":"DRS-000003","evidenceCategory":"ORDER","description":"Original order amount","required":true}
+{"id":"DRQ-000011","requirementSetId":"DRS-000003","evidenceCategory":"REFUND_HISTORY","description":"Refund history","required":true}
+{"id":"DRQ-000012","requirementSetId":"DRS-000004","evidenceCategory":"REFUND_HISTORY","description":"Refund request and transaction history","required":true}
+{"id":"DRQ-000013","requirementSetId":"DRS-000004","evidenceCategory":"CUSTOMER_COMMUNICATION","description":"Merchant communications","required":false}
+{"id":"DRQ-000014","requirementSetId":"DRS-000005","evidenceCategory":"PAYMENT","description":"Original payment record","required":true}
+{"id":"DRQ-000015","requirementSetId":"DRS-000005","evidenceCategory":"AUTHENTICATION","description":"Payment authentication records","required":true}
+{"id":"DRQ-000016","requirementSetId":"DRS-000006","evidenceCategory":"PAYMENT","description":"Original payment record","required":true}
+{"id":"DRQ-000017","requirementSetId":"DRS-000006","evidenceCategory":"CUSTOMER_COMMUNICATION","description":"Cancellation communications","required":true}

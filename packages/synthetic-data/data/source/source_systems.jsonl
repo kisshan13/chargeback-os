@@ -1,0 +1,5 @@
+{"id":"SYS-000001","name":"Simulated Stripe","type":"PAYMENT","provider":"Stripe-like Payments","isSynthetic":true,"createdAt":"2026-08-03T09:00:00.000Z"}
+{"id":"SYS-000002","name":"Simulated Shopify","type":"COMMERCE","provider":"Shopify-like Commerce","isSynthetic":true,"createdAt":"2026-08-03T09:00:00.000Z"}
+{"id":"SYS-000003","name":"Simulated ParcelPost","type":"FULFILLMENT","provider":"ParcelPost","isSynthetic":true,"createdAt":"2026-08-03T09:00:00.000Z"}
+{"id":"SYS-000004","name":"Simulated Helpdesk","type":"COMMUNICATION","provider":"Helpdesk","isSynthetic":true,"createdAt":"2026-08-03T09:00:00.000Z"}
+{"id":"SYS-000005","name":"ChargebackOS Policy Store","type":"POLICY","provider":"ChargebackOS","isSynthetic":true,"createdAt":"2026-08-03T09:00:00.000Z"}

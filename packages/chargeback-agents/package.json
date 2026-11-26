@@ -1,0 +1,55 @@
+{
+  "name": "@packages/chargeback-agents",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "files": [
+    "build",
+    "README.md",
+    "package.json"
+  ],
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./build/index.js",
+      "default": "./build/index.js"
+    },
+    "./contracts": {
+      "types": "./src/contracts/index.ts",
+      "import": "./build/contracts/index.js",
+      "default": "./build/contracts/index.js"
+    },
+    "./core": {
+      "types": "./src/core/index.ts",
+      "import": "./build/core/index.js",
+      "default": "./build/core/index.js"
+    },
+    "./adapters": {
+      "types": "./src/adapters/index.ts",
+      "import": "./build/adapters/index.js",
+      "default": "./build/adapters/index.js"
+    },
+    "./agents": {
+      "types": "./src/agents/index.ts",
+      "import": "./build/agents/index.js",
+      "default": "./build/agents/index.js"
+    },
+    "./tools": {
+      "types": "./src/tools/index.ts",
+      "import": "./build/tools/index.js",
+      "default": "./build/tools/index.js"
+    }
+  },
+  "scripts": {
+    "build": "node ../../packages/config/esbuild.config.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "verify": "pnpm run build && node build/verification/smoke.js"
+  },
+  "devDependencies": {
+    "@packages/config": "workspace:*",
+    "@types/node": "^22.0.0"
+  },
+  "dependencies": {
+    "@mozaik-ai/core": "^6.0.0"
+  }
+}

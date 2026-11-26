@@ -1,0 +1,10 @@
+:root {
+  --chargeback-black-hex: #000000;
+  --chargeback-black-oklch: oklch(0 0 0);
+  --chargeback-white-hex: #ffffff;
+  --chargeback-white-oklch: oklch(1 0 0);
+  --chargeback-gray-hex: #6b6b6b;
+  --chargeback-gray-oklch: oklch(0.53 0 0);
+  --chargeback-line-hex: #d6d6d6;
+  --chargeback-line-oklch: oklch(0.86 0 0);
+}

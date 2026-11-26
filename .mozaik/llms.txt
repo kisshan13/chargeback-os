@@ -1,0 +1,24 @@
+# Mozaik
+
+> Offline Markdown mirror of https://docs.jigjoy.ai/llms.txt
+
+- [Introduction](introduction.md): Mozaik is a TypeScript framework for multi-agent collaboration.
+- [Installation](installation.md): Add @mozaik-ai/core and configure provider credentials.
+- [Quickstart](quickstart.md): Initialize a runtime, join a human and an agent, and send a message.
+- [Runtime](runtime.md): defineRuntime and the functions used for a session.
+- [Runtime state](runtime-state.md): The typed store shared by participants.
+- [Participants](participants.md): createHuman, createAgent, and observers.
+- [Concurrent agents](concurrent-agents.md): Membership, fire-and-forget loops, and shared state.
+- [Semantic events](semantic-events.md): The runtime event bus.
+- [Situation handlers](situation-handlers.md): When/then reactions to semantic events.
+- [The agent loop](agent-loop.md): runLoop from message_received through idle.
+- [Interception](interception.md): Inspect or rewrite a loop transition.
+- [Tools](tools.md): FunctionTool definitions and MCP servers.
+- [Streaming](streaming.md): Publish inference.stream chunks.
+- [Structured output](structured-output.md): JSON Schema on InferenceInput.
+- [Model context](model-context.md): ContextItem taxonomy and persistence.
+- [Models](models.md): Bundled providers and custom inference runners.
+- [Package exports](package-exports.md): Public @mozaik-ai/core exports.
+- [Examples](examples.md): Working examples and projects built on Mozaik.
+- [ChargebackOS inside Mozaik](chargebackos-mozaik-integration.md): Detailed mapping of provider events, runtime participants, agents, tools, context, and approval workflows.
+

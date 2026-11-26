@@ -1,0 +1,6 @@
+{"id":"DRC-000001","code":"PRODUCT_NOT_RECEIVED","name":"Product not received","description":"Customer reports non-delivery."}
+{"id":"DRC-000002","code":"PRODUCT_NOT_AS_DESCRIBED","name":"Product not as described","description":"Customer reports incorrect product information."}
+{"id":"DRC-000003","code":"DUPLICATE_CHARGE","name":"Duplicate charge","description":"Customer reports multiple charges."}
+{"id":"DRC-000004","code":"REFUND_NOT_RECEIVED","name":"Refund not received","description":"Customer reports a missing refund."}
+{"id":"DRC-000005","code":"UNAUTHORIZED_TRANSACTION","name":"Unauthorized transaction","description":"Customer reports an unauthorized payment."}
+{"id":"DRC-000006","code":"SUBSCRIPTION_CANCELED","name":"Subscription canceled","description":"Customer reports billing after cancellation."}
