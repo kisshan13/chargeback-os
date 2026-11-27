@@ -1,0 +1,42 @@
+import { useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { ArrowLeft, ArrowRight, Box, ShoppingBag } from "lucide-react";
+import { StatusBadge } from "@/components/dashboard/status-badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import type { SyntheticRecord } from "@/core-api/types";
+import { useProductOverviewQuery, useProductsQuery } from "@/hooks/query/use-products-query";
+
+function value(record: Record<string, unknown>, key: string, fallback = "—") {
+  const result = record[key];
+  return result === null || result === undefined || result === "" ? fallback : String(result);
+}
+function money(minor: unknown, currency: unknown = "USD") {
+  return new Intl.NumberFormat(undefined, { style: "currency", currency: String(currency) }).format((typeof minor === "number" ? minor : 0) / 100);
+}
+function date(value: unknown) {
+  if (typeof value !== "string") return "—";
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.valueOf()) ? "—" : new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(parsed);
+}
+
+export function ProductsPage() {
+  const [offset, setOffset] = useState(0);
+  const [search, setSearch] = useState("");
+  const query = useProductsQuery(50, offset);
+  const products = (query.data?.items ?? []).filter((product) => `${product.name ?? ""} ${product.sku ?? ""}`.toLowerCase().includes(search.toLowerCase()));
+  const total = query.data?.total ?? 0;
+  return <div className="space-y-6"><div><h1 className="text-2xl font-semibold tracking-tight">Products</h1><p className="mt-1 text-sm text-muted-foreground">Catalog, current pricing, and purchase activity.</p></div><Card className="rounded-lg shadow-none"><CardHeader className="flex flex-row flex-wrap items-end justify-between gap-3 border-b pb-4"><div><CardTitle>Product catalog</CardTitle><CardDescription>{total.toLocaleString()} products</CardDescription></div><Input aria-label="Search products" placeholder="Search product or SKU" value={search} onChange={(event) => setSearch(event.target.value)} className="h-9 w-full sm:w-64" /></CardHeader>{query.isPending && <CardContent className="py-10 text-sm text-muted-foreground">Loading products…</CardContent>}{query.isError && <CardContent role="alert" className="py-10 text-sm text-destructive">Could not load products.</CardContent>}{products.length > 0 && <CardContent className="p-0"><Table><TableHeader><TableRow><TableHead>Product</TableHead><TableHead>Price</TableHead><TableHead>Orders</TableHead><TableHead>Units sold</TableHead><TableHead>Status</TableHead><TableHead /></TableRow></TableHeader><TableBody>{products.map((product) => { const price = typeof product.currentPrice === "object" && product.currentPrice !== null ? product.currentPrice as SyntheticRecord : null; return <TableRow key={product.id}><TableCell><p className="font-medium">{value(product, "name")}</p><p className="mt-0.5 text-xs text-muted-foreground">SKU {value(product, "sku")}</p></TableCell><TableCell>{price ? money(price.amountMinor, price.currency) : "No active price"}</TableCell><TableCell>{Number(product.orderCount ?? 0).toLocaleString()}</TableCell><TableCell>{Number(product.unitsSold ?? 0).toLocaleString()}</TableCell><TableCell><StatusBadge value={product.status} /></TableCell><TableCell className="text-right"><Button variant="link" size="sm" render={<Link to={`/products/${encodeURIComponent(product.id)}`} />}>Details<ArrowRight /></Button></TableCell></TableRow>; })}</TableBody></Table></CardContent>}{!query.isPending && !query.isError && products.length === 0 && <CardContent className="py-10 text-sm text-muted-foreground">No products match this search.</CardContent>}<div className="flex items-center justify-between border-t px-5 py-3"><p className="text-xs text-muted-foreground">{total === 0 ? 0 : offset + 1}–{Math.min(offset + 50, total)} of {total}</p><div className="flex gap-2"><Button variant="outline" size="sm" onClick={() => setOffset(Math.max(0, offset - 50))} disabled={!offset}><ArrowLeft />Previous</Button><Button variant="outline" size="sm" onClick={() => setOffset(offset + 50)} disabled={!query.data || offset + 50 >= total}>Next<ArrowRight /></Button></div></div></Card></div>;
+}
+
+export function ProductsRecordPage() {
+  const { recordId = "" } = useParams<{ recordId: string }>();
+  const query = useProductOverviewQuery(recordId);
+  if (query.isPending) return <p className="py-10 text-sm text-muted-foreground">Loading product…</p>;
+  if (query.isError || !query.data) return <p role="alert" className="py-10 text-sm text-destructive">Could not load this product.</p>;
+  const { product, prices, orders } = query.data;
+  const currentPrice = prices.find((price) => price.effectiveUntil === null) ?? prices[0];
+  return <div className="space-y-6"><div><p className="mb-2 text-sm text-muted-foreground"><Link to="/products" className="hover:text-indigo-300">Products</Link><span className="mx-2">/</span>Product details</p><div className="flex flex-wrap items-start justify-between gap-3"><div><h1 className="text-2xl font-semibold tracking-tight">{value(product, "name")}</h1><p className="mt-1 text-sm text-muted-foreground">SKU {value(product, "sku")} · {value(product, "type").toLowerCase()}</p></div><StatusBadge value={product.status} /></div></div><section className="grid gap-4 sm:grid-cols-3"><Card className="rounded-lg shadow-none"><CardContent className="flex items-center gap-3 p-5"><Box className="size-5 text-indigo-400" /><div><p className="text-xs text-muted-foreground">Current price</p><p className="text-xl font-semibold">{currentPrice ? money(currentPrice.amountMinor, currentPrice.currency) : "—"}</p></div></CardContent></Card><Card className="rounded-lg shadow-none"><CardContent className="flex items-center gap-3 p-5"><ShoppingBag className="size-5 text-indigo-400" /><div><p className="text-xs text-muted-foreground">Orders</p><p className="text-xl font-semibold">{orders.length}</p></div></CardContent></Card><Card className="rounded-lg shadow-none"><CardContent className="p-5"><p className="text-xs text-muted-foreground">Product type</p><p className="mt-1 text-xl font-semibold capitalize">{value(product, "type").toLowerCase()}</p></CardContent></Card></section><Card className="rounded-lg shadow-none"><CardHeader className="border-b pb-4"><CardTitle>Product information</CardTitle></CardHeader><CardContent className="pt-4"><p className="text-sm leading-6 text-muted-foreground">{value(product, "description", "No product description available.")}</p></CardContent></Card><div className="grid gap-4 lg:grid-cols-2"><Card className="rounded-lg shadow-none"><CardHeader className="border-b pb-4"><CardTitle>Price history</CardTitle><CardDescription>Recorded prices and when they applied.</CardDescription></CardHeader><CardContent className="divide-y p-0">{prices.map((price) => <div key={price.id} className="flex items-center justify-between gap-3 px-5 py-3 text-sm"><span className="font-medium">{money(price.amountMinor, price.currency)}</span><span className="text-right text-xs text-muted-foreground">{date(price.effectiveFrom)}{price.effectiveUntil ? ` – ${date(price.effectiveUntil)}` : " · Current"}</span></div>)}</CardContent></Card><Card className="rounded-lg shadow-none"><CardHeader className="border-b pb-4"><CardTitle>Recent purchases</CardTitle><CardDescription>Orders containing this product.</CardDescription></CardHeader><CardContent className="divide-y p-0">{orders.slice(0, 8).map((entry) => <Link key={entry.id} to={`/orders/${encodeURIComponent(entry.id)}`} className="flex items-center justify-between gap-3 px-5 py-3 text-sm hover:bg-muted/50"><span><span className="block font-medium">{value(entry, "externalId", entry.id)}</span><span className="text-xs text-muted-foreground">{entry.customer ? `${value(entry.customer, "firstName")} ${value(entry.customer, "lastName")}` : "Customer"} · Qty {value(entry.item ?? {}, "quantity")}</span></span><span className="text-right"><span className="block">{money(entry.item?.totalMinor, entry.item?.currency)}</span><span className="text-xs text-muted-foreground">{date(entry.placedAt)}</span></span></Link>)}</CardContent></Card></div></div>;
+}

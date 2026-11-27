@@ -11,7 +11,7 @@ export interface SurfaceProps extends HTMLAttributes<HTMLElement> {
 const toneClasses: Record<SurfaceTone, string> = {
   dark: "bg-zinc-900 text-zinc-100",
   muted: "bg-zinc-800 text-zinc-100",
-  light: "bg-white text-zinc-950"
+  light: "bg-card text-card-foreground"
 };
 
 export function Surface({

@@ -1,7 +1,10 @@
 node_modules/
 build/
+apps/api/public/
 standalone/
+apps/api/data/dispute-runs/
 .env
 .env.*
+!.env.example
 *.md
 !/README.md

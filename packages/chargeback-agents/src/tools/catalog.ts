@@ -1,16 +1,16 @@
 import type { Tool } from "@mozaik-ai/core";
 
 export const CHARGEBACK_TOOL_NAMES = {
-  loadDispute: "chargeback.load_dispute",
-  loadOrder: "chargeback.load_order",
-  loadPayment: "chargeback.load_payment",
-  loadFulfillment: "chargeback.load_fulfillment",
-  loadCustomerCommunications: "chargeback.load_customer_communications",
-  saveEvidence: "chargeback.save_evidence",
-  createFinding: "chargeback.create_finding",
-  createEvidenceRequest: "chargeback.create_evidence_request",
-  proposeResolution: "chargeback.propose_resolution",
-  submitProviderResponse: "chargeback.submit_provider_response",
+  loadDispute: "chargeback_load_dispute",
+  loadOrder: "chargeback_load_order",
+  loadPayment: "chargeback_load_payment",
+  loadFulfillment: "chargeback_load_fulfillment",
+  loadCustomerCommunications: "chargeback_load_customer_communications",
+  saveEvidence: "chargeback_save_evidence",
+  createFinding: "chargeback_create_finding",
+  createEvidenceRequest: "chargeback_create_evidence_request",
+  proposeResolution: "chargeback_propose_resolution",
+  submitProviderResponse: "chargeback_submit_provider_response",
 } as const;
 
 export interface ChargebackToolPorts {

@@ -6,6 +6,7 @@ import {
   defineRuntime,
   type Agent,
   type InferenceInput,
+  type SemanticEvent as MozaikSemanticEvent,
   type SituationContext,
 } from "@mozaik-ai/core";
 import type {
@@ -46,6 +47,7 @@ export interface ChargebackAgentRuntimeOptions {
   readonly state?: ChargebackRuntimeState;
   readonly inferenceRunnerConfig?: Parameters<ReturnType<typeof defineRuntime<ChargebackRuntimeState>>["initializeRuntime"]>[0]["inferenceRunnerConfig"];
   readonly onEvent?: (event: ChargebackSemanticEvent) => void;
+  readonly onRuntimeEvent?: (event: MozaikSemanticEvent) => void;
 }
 
 class WhenChargebackEvent extends SituationSpecification {
@@ -68,15 +70,23 @@ export class ChargebackAgentRuntime {
   private readonly handlerCounts = new Map<ChargebackEventType, number>();
   private readonly participants = new Map<string, ReturnType<typeof createHuman>>();
   private readonly onEvent?: (event: ChargebackSemanticEvent) => void;
+  private readonly onRuntimeEvent?: (event: MozaikSemanticEvent) => void;
 
   constructor(options: ChargebackAgentRuntimeOptions = {}) {
     this.state = options.state ?? new ChargebackRuntimeState();
     this.onEvent = options.onEvent;
+    this.onRuntimeEvent = options.onRuntimeEvent;
     this.mozaik = defineRuntime<ChargebackRuntimeState>();
     this.mozaik.initializeRuntime({
       state: this.state,
       inferenceRunnerConfig: options.inferenceRunnerConfig,
     });
+    const runtime = this.mozaik.resolveRuntime();
+    const publish = runtime.publish.bind(runtime);
+    runtime.publish = (event) => {
+      this.onRuntimeEvent?.(event);
+      publish(event);
+    };
 
     this.gateway = createHuman({
       name: "Chargeback event gateway",

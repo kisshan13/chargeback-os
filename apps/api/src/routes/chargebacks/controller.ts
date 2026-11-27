@@ -1,5 +1,5 @@
 import type { RequestHandler } from "express";
-import { syntheticData } from "../../lib/chargeback-runtime.js";
+import { createdSyntheticDisputes, findSyntheticDispute, syntheticData } from "../../lib/chargeback-runtime.js";
 import ApiResponse from "../../lib/response.js";
 import { ApiError } from "../../lib/error.js";
 import { requestHandler } from "../../utils/request-handler.js";
@@ -15,10 +15,13 @@ const collections = {
   paymentMethods: syntheticData.paymentMethods,
   orders: syntheticData.orders,
   orderItems: syntheticData.orderItems,
+  orderPolicyAcceptances: syntheticData.orderPolicyAcceptances,
   payments: syntheticData.payments,
   transactions: syntheticData.transactions,
   paymentAuthentications: syntheticData.paymentAuthentications,
   refunds: syntheticData.refunds,
+  refundTransactions: syntheticData.refundTransactions,
+  settlementEntries: syntheticData.settlementEntries,
   shipments: syntheticData.shipments,
   shipmentEvents: syntheticData.shipmentEvents,
   deliveryConfirmations: syntheticData.deliveryConfirmations,
@@ -37,39 +40,43 @@ const collections = {
   investigationRuns: syntheticData.investigationRuns,
   agentExecutions: syntheticData.agentExecutions,
   evidence: syntheticData.evidence,
+  evidenceSourceReferences: syntheticData.evidenceSourceReferences,
   findings: syntheticData.findings,
+  findingEvidence: syntheticData.findingEvidence,
+  findingVerifications: syntheticData.findingVerifications,
   contradictions: syntheticData.contradictions,
+  contradictionEvidence: syntheticData.contradictionEvidence,
   evidenceRequests: syntheticData.evidenceRequests,
-  resolutions: syntheticData.resolutions
+  resolutions: syntheticData.resolutions,
+  resolutionFindings: syntheticData.resolutionFindings,
+  expectedOutcomes: syntheticData.expectedOutcomes
 } as const;
 
 export const controllerGetChargebackDashboard: RequestHandler = requestHandler(async () => {
-  const disputes = syntheticData.disputes.findMany({
-    orderBy: { field: "createdAt", direction: "desc" },
-    limit: 8
-  });
-  const totalAtRiskMinor = syntheticData.disputes.all().reduce((total, dispute) => total + dispute.amountMinor, 0);
+  const allDisputes = [...syntheticData.disputes.all(), ...createdSyntheticDisputes.values()];
+  const disputes = allDisputes.sort((left, right) => Date.parse(right.createdAt) - Date.parse(left.createdAt)).slice(0, 8);
+  const totalAtRiskMinor = allDisputes.reduce((total, dispute) => total + dispute.amountMinor, 0);
   const dueSoonCutoff = Date.now() + 7 * 24 * 60 * 60 * 1000;
-  const dueSoon = syntheticData.disputes.all().filter((dispute) => Date.parse(dispute.responseDeadline) <= dueSoonCutoff).length;
+  const dueSoon = allDisputes.filter((dispute) => Date.parse(dispute.responseDeadline) <= dueSoonCutoff).length;
 
   return new ApiResponse({
     isSynthetic: true,
     generatedAt: new Date().toISOString(),
     metrics: {
-      totalDisputes: syntheticData.disputes.length,
-      needsResponse: syntheticData.disputes.withStatus("NEEDS_RESPONSE").length,
-      underReview: syntheticData.disputes.withStatus("UNDER_REVIEW").length,
+      totalDisputes: allDisputes.length,
+      needsResponse: allDisputes.filter((dispute) => dispute.providerStatus === "NEEDS_RESPONSE").length,
+      underReview: allDisputes.filter((dispute) => dispute.providerStatus === "UNDER_REVIEW").length,
       totalAtRiskMinor,
       dueSoon
     },
     recentDisputes: disputes,
-    resourceCounts: Object.fromEntries(Object.entries(collections).map(([name, collection]) => [name, collection.length]))
+    resourceCounts: Object.fromEntries(Object.entries(collections).map(([name, collection]) => [name, name === "disputes" ? allDisputes.length : collection.length]))
   }, "Synthetic chargeback dashboard");
 });
 
 export const controllerGetChargebackDisputes: RequestHandler = requestHandler(async (req) => {
   const query = validatorChargebackDisputesQuery.parse(req.query);
-  const allDisputes = syntheticData.disputes.all();
+  const allDisputes = [...syntheticData.disputes.all(), ...createdSyntheticDisputes.values()];
   const filtered = allDisputes.filter((dispute) => {
     const statusMatches = !query.status || dispute.providerStatus === query.status;
     const searchMatches = !query.search || [dispute.id, dispute.externalId, dispute.customerClaim]
@@ -85,7 +92,7 @@ export const controllerGetChargebackDisputes: RequestHandler = requestHandler(as
 
 export const controllerGetChargebackDispute: RequestHandler = requestHandler(async (req) => {
   const { disputeId } = validatorChargebackDisputeParams.parse(req.params);
-  const dispute = syntheticData.disputes.findById(disputeId);
+  const dispute = findSyntheticDispute(disputeId);
   if (!dispute) throw new ApiError(`Dispute not found: ${disputeId}`, 404);
 
   const payment = syntheticData.payments.findById(dispute.paymentId);

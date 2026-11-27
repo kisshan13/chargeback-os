@@ -5,7 +5,7 @@ import { cn } from "cn";
 const customButtonVariants = cva("custom-button", {
   variants: {
     variant: {
-      primary: "custom-button--primary hover:bg-indigo-700",
+      primary: "custom-button--primary hover:bg-indigo-400",
       secondary: "custom-button--secondary",
       link: "custom-button--link"
     },
